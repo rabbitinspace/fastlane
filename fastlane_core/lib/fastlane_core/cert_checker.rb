@@ -39,6 +39,7 @@ module FastlaneCore
     def self.installed?(path, in_keychain: nil)
       UI.user_error!("Could not find file '#{path}'") unless File.exist?(path)
 
+      in_keychain &&= FastlaneCore::Helper.keychain_path(in_keychain)
       ids = installed_identies(in_keychain: in_keychain)
       ids += installed_installers(in_keychain: in_keychain)
       finger_print = sha1_fingerprint(path)
