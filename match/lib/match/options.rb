@@ -62,6 +62,11 @@ module Match
                                      description: "Skip syncing provisioning profiles",
                                      type: Boolean,
                                      default_value: false),
+        FastlaneCore::ConfigItem.new(key: :skip_certificates,
+                                     env_name: "MATCH_SKIP_CERTIFICATES",
+                                     description: "Skip syncing certificates",
+                                     type: Boolean,
+                                     default_value: false),
 
         FastlaneCore::ConfigItem.new(key: :app_identifier,
                                      short_option: "-a",
