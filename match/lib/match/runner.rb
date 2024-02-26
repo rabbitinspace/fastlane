@@ -83,22 +83,26 @@ module Match
         end
       end
 
-      # Certificate
-      cert_id = fetch_certificate(params: params, renew_expired_certs: false)
-
-      # Mac Installer Distribution Certificate
-      additional_cert_types = params[:additional_cert_types] || []
-      cert_ids = additional_cert_types.map do |additional_cert_type|
-        fetch_certificate(params: params, renew_expired_certs: false, specific_cert_type: additional_cert_type)
-      end
-
       profile_type = Sigh.profile_type_for_distribution_type(
         platform: params[:platform],
         distribution_type: params[:type]
       )
 
-      cert_ids << cert_id
-      spaceship.certificates_exists(username: params[:username], certificate_ids: cert_ids, platform: params[:platform], profile_type: profile_type, cached_certificates: self.cache.certificates) if spaceship
+      # Certificate
+
+      unless params[:skip_certificates]
+        # Certificate
+        cert_id = fetch_certificate(params: params, renew_expired_certs: false)
+
+        # Mac Installer Distribution Certificate
+        additional_cert_types = params[:additional_cert_types] || []
+        cert_ids = additional_cert_types.map do |additional_cert_type|
+          fetch_certificate(params: params, renew_expired_certs: false, specific_cert_type: additional_cert_type)
+        end
+
+        cert_ids << cert_id
+        spaceship.certificates_exists(username: params[:username], certificate_ids: cert_ids, platform: params[:platform], profile_type: profile_type, cached_certificates: self.cache.certificates) if spaceship
+      end
 
       # Provisioning Profiles
 
